@@ -28,8 +28,9 @@ namespace FamilyPlanner_Api.Controllers
             return Ok(await _userService.GetAllUsers());
         }
 
+
         // GET api/<UsersController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUserById")]
         public async Task<IActionResult> GetUserById(string id)
         {
             User? user = await _userService.GetUserById(id);
@@ -42,25 +43,62 @@ namespace FamilyPlanner_Api.Controllers
             return Ok(user);
         }
 
+
         // POST api/<UsersController>
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
-            return Created();
+            try
+            {
+                User user = await _userService.CreateUser(createUserDto);
+                return CreatedAtRoute(
+                    nameof(GetUserById),
+                    routeValues: new { id = user.Id },
+                    value: user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+            
         }
+
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updateUserDto)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserDto updateUserDto)
         {
-            return Ok();
+            try
+            {
+                User? user = await _userService.UpdateUser(id, updateUserDto, GetCurrentUserID());
+
+                if (user is null)
+                {
+                    return NotFound($"User '{id}' was not found");
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
 
         // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            return NoContent();
+            try
+            {
+                await _userService.DeleteUser(id);
+                return NoContent();
+            }
+            catch (UserNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

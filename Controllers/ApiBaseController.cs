@@ -7,7 +7,7 @@ namespace FamilyPlanner_Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    //[Authorize]  // TODO: Uncomment this once Authorization has been set up
     public class ApiBaseController : ControllerBase
     {
         protected string GetCurrentUserID()

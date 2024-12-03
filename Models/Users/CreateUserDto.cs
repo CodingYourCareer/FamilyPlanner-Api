@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FamilyPlanner_Api.Models.Users;
 
 public class CreateUserDto
 {
-    [Key]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)] // Disabled auto increment
     [Required]
     [MaxLength(255)]
     public string Id { get; set; }

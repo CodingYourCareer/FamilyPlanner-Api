@@ -5,7 +5,7 @@ namespace FamilyPlanner_Api.Models.Users;
 
 public class User : BaseModel
 {
-    [Key]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)] // Disabled auto increment
     [Required]
     [MaxLength(255)]
     public string Id { get; set; }
